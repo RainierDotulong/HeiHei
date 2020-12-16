@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="16119" systemVersion="19G73" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="HarvestEntity" representedClassName="HarvestEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="company" optional="YES" attributeType="String"/>
+        <attribute name="companyAddress" optional="YES" attributeType="String"/>
+        <attribute name="currentNetto" optional="YES" attributeType="String"/>
+        <attribute name="cycleNumber" optional="YES" attributeType="String"/>
+        <attribute name="deliveryOrderNumber" optional="YES" attributeType="String"/>
+        <attribute name="divider" optional="YES" attributeType="String"/>
+        <attribute name="driver" optional="YES" attributeType="String"/>
+        <attribute name="driverContact" optional="YES" attributeType="String"/>
+        <attribute name="ekorKeranjang" optional="YES" attributeType="String"/>
+        <attribute name="farmName" optional="YES" attributeType="String"/>
+        <attribute name="finishTimestamp" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="floorNumber" optional="YES" attributeType="String"/>
+        <attribute name="fullName" optional="YES" attributeType="String"/>
+        <attribute name="hargaPerKG" optional="YES" attributeType="String"/>
+        <attribute name="jumlahKGPO" optional="YES" attributeType="String"/>
+        <attribute name="licensePlate" optional="YES" attributeType="String"/>
+        <attribute name="loadData" optional="YES" attributeType="Transformable"/>
+        <attribute name="nomorSuratJalan" optional="YES" attributeType="String"/>
+        <attribute name="pemborongPanen" optional="YES" attributeType="String"/>
+        <attribute name="tara" optional="YES" attributeType="String"/>
+        <attribute name="timestamp" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="totalNumber" optional="YES" attributeType="String"/>
+        <attribute name="totalWeight" optional="YES" attributeType="String"/>
+    </entity>
+    <entity name="UserProfile" representedClassName="UserProfile" syncable="YES" codeGenerationType="class">
+        <attribute name="cycleNumber" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="email" optional="YES" attributeType="String"/>
+        <attribute name="farmName" optional="YES" attributeType="String"/>
+        <attribute name="fullName" optional="YES" attributeType="String"/>
+        <attribute name="hargaPerKwh" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="loginClass" optional="YES" attributeType="String"/>
+        <attribute name="numberOfFloors" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+    </entity>
+    <elements>
+        <element name="HarvestEntity" positionX="-54" positionY="135" width="128" height="388"/>
+        <element name="UserProfile" positionX="-54" positionY="90" width="128" height="148"/>
+    </elements>
+</model>
