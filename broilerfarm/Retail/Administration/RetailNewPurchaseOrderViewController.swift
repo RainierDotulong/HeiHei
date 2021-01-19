@@ -211,7 +211,6 @@ class RetailNewPurchaseOrderViewController: UIViewController, UITableViewDelegat
             self.deliverByTimestamp = datePicker.date.timeIntervalSince1970
             self.tableView.reloadData()
         }
-        
         let cancel = UIAlertAction(title: "Cancel", style: .default, handler: nil)
         
         alert.addAction(ok)

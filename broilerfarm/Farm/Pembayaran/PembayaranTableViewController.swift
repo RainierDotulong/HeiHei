@@ -120,7 +120,7 @@ class PembayaranTableViewController: UITableViewController, EmptyStateDelegate, 
               }
               return
             }
-            
+            print(documents)
             self.dataArray = documents.compactMap { queryDocumentSnapshot -> Pembayaran? in
               return try? queryDocumentSnapshot.data(as: Pembayaran.self)
             }

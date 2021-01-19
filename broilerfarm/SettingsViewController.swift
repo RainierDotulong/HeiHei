@@ -38,6 +38,8 @@ class SettingsViewController : UIViewController {
     
     var loadedUserData = [UserProfile]()
     
+    var exportFlag : Bool  = false
+    
     @IBOutlet var navItem: UINavigationItem!
     
     override func viewDidLoad() {
@@ -91,7 +93,8 @@ class SettingsViewController : UIViewController {
             updateFirebaseUserProfile()
         }
         else {
-            _ = self.navigationController?.popViewController(animated: true)
+            farmName = selectedFarmName
+            updateFirebaseUserProfile()
         }
     }
     
@@ -108,11 +111,75 @@ class SettingsViewController : UIViewController {
                 SVProgressHUD.dismiss()
             } else {
                 print("Document successfully written!")
-                self.getCycleNumber()
+                self.selectCycle()
             }
         }
     }
-    
+    func selectCycle() {
+        exportFlag = true
+        
+        let dialogMessage = UIAlertController(title: "Export Data Panen", message: "Select Export Type", preferredStyle: .alert)
+        
+        let previousCycle = UIAlertAction(title: "Previous Cycle", style: .default, handler: { (action) -> Void in
+            print("Previous Cycle button tapped")
+            if self.loginClass == "administrator" ||  self.loginClass == "superadmin" {
+                self.getPreviousCycleNumber()
+            }
+            else {
+                print("Not admin")
+            }
+        })
+        let currentCycle = UIAlertAction(title: "Current Cycle", style: .default, handler: { (action) -> Void in
+            print("Current Cycle Button Tapped")
+            if self.loginClass == "administrator" ||  self.loginClass == "superadmin" {
+                self.getCycleNumber()
+            }
+            else {
+                print("NOt Admin")
+            }
+        })
+        let cancel = UIAlertAction(title: "Cancel", style: .default, handler: { (action) -> Void in
+            print("Cancel button tapped")
+        })
+        
+        dialogMessage.addAction(previousCycle)
+        dialogMessage.addAction(currentCycle)
+        dialogMessage.addAction(cancel)
+        
+        self.present(dialogMessage, animated: true, completion: nil)
+    }
+    func getPreviousCycleNumber() {
+        SVProgressHUD.show()
+        //Get Cycle Number from Firebase
+        let cycle = Firestore.firestore().collection(self.farmName + "Details").document("farmDetail")
+        
+        cycle.getDocument { (document, error) in
+            if let document = document, document.exists {
+                let dataDescription = document.data()
+                self.cycleNumber = dataDescription!["currentCycleNumber"] as! Int - 1
+                self.numberOfFloors = dataDescription!["numberOfFloors"] as! Int
+                self.hargaPerKwh = dataDescription!["hargaPerKwh"] as! Float
+                self.updateCoreDataUserProfile()
+                
+            } else {
+                print("Current Cycle Document does not exist")
+                SVProgressHUD.dismiss()
+                //Declare Alert message
+                let dialogMessage = UIAlertController(title: "Current Cycle Document does not exist", message: "Please Contact Administrator", preferredStyle: .alert)
+                
+                // Create OK button with action handler
+                let ok = UIAlertAction(title: "OK", style: .default, handler: { (action) -> Void in
+                    print("Ok button tapped")
+                })
+                
+                //Add OK and Cancel button to dialog message
+                dialogMessage.addAction(ok)
+                
+                // Present dialog message to user
+                self.present(dialogMessage, animated: true, completion: nil)
+            }
+        }
+    }
     func getCycleNumber() {
         SVProgressHUD.show()
         //Get Cycle Number from Firebase

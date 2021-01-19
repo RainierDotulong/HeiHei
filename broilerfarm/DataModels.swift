@@ -140,6 +140,32 @@ struct RetailPurchaseOrder {
     var timestamp : Double
     var isPaid : Bool
 }
+struct WholesalePurchaseOrder {
+    var purchaseOrderNumber : String
+    var name : String
+    var address : String
+    var phone: String
+    var status: String
+    var orderedItems : [WholesaleProduct]
+    var orderedItemNotes: [String]
+    var orderedItemQuantities : [Int]
+    var realItems : [WholesaleProduct]
+    var realItemNotes : [String]
+    var realItemQuantities : [Float]
+    var preppedBy : String
+    var qualityCheckedBy : String
+    var createdBy : String
+    var timestamp : Double
+    var isPaid : Bool
+}
+struct WholesaleProduct {
+    var name : String
+    var description : String
+    var pricePerUnit : Int
+    var unit : String
+    var createdBy : String
+    var timestamp : Double
+}
 
 struct TransportProvider {
     var name : String

@@ -10,6 +10,11 @@ import Foundation
 import FirebaseFirestore
 import FirebaseFirestoreSwift
 
+struct recapPembayaran: Codable {
+    var pembayaranTotal : Int
+    var name : String
+}
+
 struct Pembayaran: Codable {
     
     @DocumentID var id: String?

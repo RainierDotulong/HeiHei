@@ -45,6 +45,7 @@ class PanenTableViewController: UITableViewController, EmptyStateDelegate, UISea
     var selectedData = Panen(id: "", creationTimestamp: 0, isChecked: false, hargaPerKG: 0, mulaiMuatTimestamp: 0, selesaiMuatTimestamp: 0, jumlahKGDO: 0, namaPerusahaan: "", alamatPerusahaan: "", metodePembayaran: "", namaSopir: "", noKendaraaan: "", noSopir: "", pembuatDO: "", rangeBB: "", rangeBawah: 0, rangeAtas: 0, status: "", pengambilanTimestamp: 0, timestamps: [Double](), lantai: [Int](), jumlah: [Int](), isSubtract: [Bool](), isVoided: [Bool](), sekat: [String](), tara: [Float](), berat: [Float](), pemborongPanen: "", penimbang: "", accBy: "")
     
     var namaPerusahaan : [String] = [String]()
+
     
     var resultSearchController = UISearchController()
     
@@ -122,6 +123,7 @@ class PanenTableViewController: UITableViewController, EmptyStateDelegate, UISea
     }
     
     func getFloorCycleData() {
+    
         SVProgressHUD.show()
         floorDetails.removeAll(keepingCapacity: false)
         for floor in 1...numberOfFloors {
@@ -1006,6 +1008,10 @@ class PanenTableViewController: UITableViewController, EmptyStateDelegate, UISea
             print("Failed to create file")
             print("\(error)")
         }
+    }
+    func constructAdminLantaiDetailedCsv(dataArray: [Panen]) {
+        let fileName = "\(farmName.prefix(1).uppercased())\(cycleNumber)-Panen-Lantai-Detailed.csv"
+        let path = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(fileName)
     }
     
     func constructAdminDetailedPanenCsv(dataArray: [Panen]) {

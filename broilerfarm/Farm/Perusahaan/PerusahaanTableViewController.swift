@@ -101,7 +101,7 @@ class PerusahaanTableViewController: UITableViewController, UISearchResultsUpdat
         
         //Old companyList Collection Data Migration
         //migrate()
-        
+        getCompanyList()
     }
     
     //Disable Autorotation
@@ -298,6 +298,117 @@ class PerusahaanTableViewController: UITableViewController, UISearchResultsUpdat
             return
         }
         createBalanceCsv(perusahaan: perusahaan, dataPembayaran: selectedPembayaranData, dataPanen: selectedPanenData)
+    }
+    @IBAction func recapButtonPressed(_ sender: UIBarButtonItem) {
+        print("Create recap")
+        let filename = "\(farmName.prefix(1).uppercased())\(cycleNumber)TotalBalance.csv"
+        let path = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(filename)
+        var csvText = "Perusahaan "
+        csvText.append ("Name,Pembayaran,Panen,subtotal,Balance,TotalPanen,BeratPanen")
+        csvText.append ("\n")
+        var counter = 0
+        var totalPanen = 0.0
+        var BeratPanenTotal = 0.0
+        var balance = 0
+        for name in recapNamePerusahaan {
+            BeratPanenTotal = Double(recapPanenTotal[counter].jumlahBerat)+BeratPanenTotal
+            print(BeratPanenTotal)
+            totalPanen = Double(recapPanenTotal[counter].panenTotal)+totalPanen
+            balance = recapPembayaranTotal[counter].pembayaranTotal - recapPanenTotal[counter].panenTotal + balance
+            csvText.append("\(name.name),\(recapPembayaranTotal[counter].pembayaranTotal),\(recapPanenTotal[counter].panenTotal),\(recapPembayaranTotal[counter].pembayaranTotal - recapPanenTotal[counter].panenTotal),\(balance),\(totalPanen),\(recapPanenTotal[counter].jumlahBerat)\n")
+            counter += 1
+        }
+        csvText.append (" ")
+        csvText.append ("\n")
+        let everage = Double(round(1000*totalPanen/BeratPanenTotal)/1000)
+        csvText.append("EVERAGE,\(everage)")
+        do {
+            try csvText.write(to: path!, atomically: true, encoding: String.Encoding.utf8)
+            csvPath = path!
+            let previewController = QLPreviewController()
+            previewController.dataSource = self
+            present(previewController, animated: true)
+            
+        } catch {
+            print("Failed to create file")
+            print("\(error)")
+        }
+    }
+    
+    var recapPembayaranTotal : [recapPembayaran] = [recapPembayaran]()
+    var recapPanenTotal : [recapPanen] = [recapPanen]()
+    var recapNamePerusahaan : [recapName] = [recapName]()
+    
+    func getCompanyList() {
+        let db = Firestore.firestore()
+        db.collection("companyList").getDocuments { (querySnapshot, error) in
+            if let error = error {
+                print("Error Getting Documents\(error)")
+            } else {
+                guard let snap = querySnapshot else {return}
+                for document in snap.documents {
+                    let name = document.documentID
+                    let db = Firestore.firestore()
+                    //GET THE NAME FROM TABLE
+                    //getPanenData
+                    db.collection("\(self.farmName)\(self.cycleNumber)Panen").whereField("namaPerusahaan", isEqualTo: "\(name)").order(by: "namaPerusahaan").addSnapshotListener { (querySnapshot, err) in
+                        guard let documents = querySnapshot?.documents else {
+                            return
+                        }
+                        var total = 0
+                        var totalBerat = 0
+                        for documents in documents {
+                            let data = documents.data()
+                            let jumlah = data["jumlahKGDO"] as! Int
+                            let hargaPerKG = data["hargaPerKG"] as! Int
+                            totalBerat = jumlah + totalBerat
+                            total = total + jumlah * hargaPerKG
+                        }
+                        let newRecapPanen = recapPanen(panenTotal: total, name: name, jumlahBerat : totalBerat)
+                        self.recapPanenTotal.append(newRecapPanen)
+                    }
+                    db.collection("\(self.farmName)\(self.cycleNumber)Pembayaran").whereField("perusahaanName", isEqualTo: "\(name)").order(by: "perusahaanName").addSnapshotListener { (querySnapshot, err) in
+                        guard let documents = querySnapshot?.documents else {
+                          return
+                        }
+                        if name == "Cindie" {
+                            return
+                        } else{
+                            print("Pembayaran: \(name)")
+                            var total = 0
+                            for documents in documents {
+                                let data = documents.data()
+                                let nominal = data["nominal"] as! Int
+                                total = total + nominal
+                            }
+                            let newRecapPembayaran = recapPembayaran(pembayaranTotal: total, name: name)
+                            self.recapPembayaranTotal.append(newRecapPembayaran)
+                            let newRecapName = recapName(name: name)
+                            self.recapNamePerusahaan.append(newRecapName)
+                        }
+                    }
+                }
+            }
+        }
+    }
+    func createCSV(dataPembayaran: [recapPembayaran], dataPanen: [recapPanen]) {
+        let filename = "\(farmName.prefix(1).uppercased())\(cycleNumber)TotalBalance.csv"
+        let path = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(filename)
+        var csvText = "Perusahaan "
+        csvText.append ("Name,Pembayaran,Panen,Total")
+        
+        
+        do {
+            try csvText.write(to: path!, atomically: true, encoding: String.Encoding.utf8)
+            csvPath = path!
+            let previewController = QLPreviewController()
+            previewController.dataSource = self
+            present(previewController, animated: true)
+            
+        } catch {
+            print("Failed to create file")
+            print("\(error)")
+        }
     }
     
     func createBalanceCsv(perusahaan: Perusahaan, dataPembayaran: [Pembayaran], dataPanen: [Panen]) {

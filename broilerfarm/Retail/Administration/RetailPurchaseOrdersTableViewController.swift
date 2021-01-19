@@ -88,7 +88,6 @@ class RetailPurchaseOrdersTableViewController: UITableViewController, UIEmptySta
         // Set the data source and delegate
         self.emptyStateDataSource = self
         self.emptyStateDelegate = self
-        
         // Remove seperator lines from empty cells
         self.tableView.tableFooterView = UIView(frame: CGRect.zero)
         

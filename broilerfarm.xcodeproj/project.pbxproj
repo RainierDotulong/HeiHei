@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		32374A4EA56386110CAFFF17 /* Pods_broilerfarm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A5FD76399F6484534C9223C /* Pods_broilerfarm.framework */; };
+		A1562CE8259D88C400B16AB7 /* WholesaleModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1562CE7259D88C400B16AB7 /* WholesaleModel.swift */; };
+		A1562CEB25A2BED100B16AB7 /* WholesaleTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1562CEA25A2BED100B16AB7 /* WholesaleTableViewController.swift */; };
 		B002F41724F4ECE3004A8FE2 /* ScaleBLETableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B002F41624F4ECE3004A8FE2 /* ScaleBLETableViewController.swift */; };
 		B002F41A24F4F46B004A8FE2 /* ScaleBLEModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B002F41924F4F46B004A8FE2 /* ScaleBLEModel.swift */; };
 		B002F41C24F4FFB0004A8FE2 /* PanenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B002F41B24F4FFB0004A8FE2 /* PanenViewController.swift */; };
@@ -154,6 +156,8 @@
 /* Begin PBXFileReference section */
 		162B432C1D162C773A942BED /* Pods-broilerfarm.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-broilerfarm.release.xcconfig"; path = "Target Support Files/Pods-broilerfarm/Pods-broilerfarm.release.xcconfig"; sourceTree = "<group>"; };
 		5A5FD76399F6484534C9223C /* Pods_broilerfarm.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_broilerfarm.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A1562CE7259D88C400B16AB7 /* WholesaleModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WholesaleModel.swift; sourceTree = "<group>"; };
+		A1562CEA25A2BED100B16AB7 /* WholesaleTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WholesaleTableViewController.swift; sourceTree = "<group>"; };
 		B002F41624F4ECE3004A8FE2 /* ScaleBLETableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScaleBLETableViewController.swift; sourceTree = "<group>"; };
 		B002F41924F4F46B004A8FE2 /* ScaleBLEModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScaleBLEModel.swift; sourceTree = "<group>"; };
 		B002F41B24F4FFB0004A8FE2 /* PanenViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanenViewController.swift; sourceTree = "<group>"; };
@@ -327,6 +331,15 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		A1562CE3259D883E00B16AB7 /* Wholesale */ = {
+			isa = PBXGroup;
+			children = (
+				A1562CE7259D88C400B16AB7 /* WholesaleModel.swift */,
+				A1562CEA25A2BED100B16AB7 /* WholesaleTableViewController.swift */,
+			);
+			path = Wholesale;
+			sourceTree = "<group>";
+		};
 		B002F41824F4F060004A8FE2 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
@@ -418,6 +431,7 @@
 				B0CAD4562451ABAA00ADCEF7 /* Retail */,
 				B06B6D3A22FE97C600B1395C /* SignatureViewController.swift */,
 				B06B6D3822FE96DE00B1395C /* YPDrawSignatureView.swift */,
+				A1562CE3259D883E00B16AB7 /* Wholesale */,
 				B0707D6324A046F500BDE8F7 /* Carcass */,
 				B0AFA68D24A8A4E200B41C2B /* Cold Storage */,
 				B0DD3C1C24231396008B4261 /* Misc */,
@@ -902,6 +916,7 @@
 				B00F1EEF24F6551A006A84D2 /* PanenSuratJalanViewController.swift in Sources */,
 				B037B4F624A44958008EF673 /* StorageProviderInputViewController.swift in Sources */,
 				B0EA2E30247BA44900D1AD76 /* RetailStockOperationHistoryTableViewController.swift in Sources */,
+				A1562CEB25A2BED100B16AB7 /* WholesaleTableViewController.swift in Sources */,
 				B0682B2424529DEE0038B3A0 /* RetailDeliveryViewController.swift in Sources */,
 				B0CAD45524515D6900ADCEF7 /* GoogleMapsViewController.swift in Sources */,
 				B00A784F24A5F95E008FB420 /* OutputRPAViewController.swift in Sources */,
@@ -983,6 +998,7 @@
 				B0DBDEE924FCE7B700EBE3D7 /* CarcassModel.swift in Sources */,
 				B00CA2F32342442100F361A2 /* RekeningViewController.swift in Sources */,
 				B08C6991237CBEE500AC10B5 /* PettyCashHistoryTableViewController.swift in Sources */,
+				A1562CE8259D88C400B16AB7 /* WholesaleModel.swift in Sources */,
 				B0707D6924A07B4B00BDE8F7 /* MenuListTableViewController.swift in Sources */,
 				B00F39CF24DC04700089A7F7 /* ListrikLaporViewController.swift in Sources */,
 				B0682B222451C2330038B3A0 /* RetailPreparationTicketViewController.swift in Sources */,
