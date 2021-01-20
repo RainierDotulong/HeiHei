@@ -24,6 +24,7 @@ class PanenTableViewCell : UITableViewCell {
     @IBOutlet var rangeBBLabel: UILabel!
     @IBOutlet var sopirKendaraanLabel: UILabel!
     @IBOutlet var nomorPanenLabel: UILabel!
+    @IBOutlet var sumLabel: UILabel!
 }
 
 class PanenTableViewController: UITableViewController, EmptyStateDelegate, UISearchResultsUpdating, QLPreviewControllerDataSource {
@@ -432,6 +433,8 @@ class PanenTableViewController: UITableViewController, EmptyStateDelegate, UISea
             cell.namaPerusahaanLabel.text = data.namaPerusahaan
             cell.jumlahKGLabel.text = "Jumlah KG DO: \(String(format: "%.2f", data.jumlahKGDO)) KG"
             cell.rangeBBLabel.text = "Range BB: \(data.rangeBB)"
+            let total = (data.jumlahKGDO * Float(data.hargaPerKG))
+            cell.sumLabel.text = "Sum: \(total.avoidNotation) / HargaPerKG: \(data.hargaPerKG)"
             cell.sopirKendaraanLabel.text = "Sopir: \(data.namaSopir) (\(data.noKendaraaan))"
             cell.nomorPanenLabel.text = "NO: \(farmName.prefix(1).uppercased())\(cycleNumber)-\(Int(data.creationTimestamp))"
             
@@ -1324,5 +1327,18 @@ class PanenTableViewController: UITableViewController, EmptyStateDelegate, UISea
             vc?.numberOfFloors = numberOfFloors
             vc?.panen = selectedData
         }
+    }
+}
+extension Formatter {
+    static let avoidNotation: NumberFormatter = {
+        let numberFormatter = NumberFormatter()
+        numberFormatter.maximumFractionDigits = 8
+        numberFormatter.numberStyle = .decimal
+        return numberFormatter
+    }()
+}
+extension FloatingPoint {
+    var avoidNotation: String {
+        return Formatter.avoidNotation.string(for: self) ?? ""
     }
 }
