@@ -76,6 +76,7 @@ class PanenInvoiceViewController: UIViewController, QLPreviewControllerDataSourc
         tanggalLabel.text = stringDate
         
         print(panen.jumlah)
+        print(panen.jumlahKGDO)
         if panen.jumlah.isEmpty {
             isProforma = true
         }

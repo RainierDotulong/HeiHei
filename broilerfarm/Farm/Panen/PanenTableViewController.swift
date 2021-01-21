@@ -430,10 +430,23 @@ class PanenTableViewController: UITableViewController, EmptyStateDelegate, UISea
         func createCell(data : Panen) -> PanenTableViewCell {
             let cell = tableView.dequeueReusableCell(withIdentifier: "panenCell", for: indexPath) as! PanenTableViewCell
             
+            var validJumlah : [Int] = [Int]()
+            var validBerat : [Float] = [Float]()
+            var validTara : [Float] = [Float]()
+            for i in 0..<data.isVoided.count {
+                if data.isVoided[i] == false && data.isSubtract[i] == false {
+                    validJumlah.append(data.jumlah[i])
+                    validBerat.append(data.berat[i])
+                    validTara.append(data.tara[i])
+                }
+            }
             cell.namaPerusahaanLabel.text = data.namaPerusahaan
             cell.jumlahKGLabel.text = "Jumlah KG DO: \(String(format: "%.2f", data.jumlahKGDO)) KG"
             cell.rangeBBLabel.text = "Range BB: \(data.rangeBB)"
-            let total = (data.jumlahKGDO * Float(data.hargaPerKG))
+            let totalEkor = validJumlah.reduce(0,+)
+            let netto = validBerat.reduce(0,+) - validTara.reduce(0,+)
+            let total = (netto * Float(data.hargaPerKG))
+            print("Name: \(data.namaPerusahaan) kgdo: \(data.berat)")
             cell.sumLabel.text = "Sum: \(total.avoidNotation) / HargaPerKG: \(data.hargaPerKG)"
             cell.sopirKendaraanLabel.text = "Sopir: \(data.namaSopir) (\(data.noKendaraaan))"
             cell.nomorPanenLabel.text = "NO: \(farmName.prefix(1).uppercased())\(cycleNumber)-\(Int(data.creationTimestamp))"

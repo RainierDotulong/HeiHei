@@ -312,7 +312,6 @@ class PerusahaanTableViewController: UITableViewController, UISearchResultsUpdat
         var balance = 0
         for name in recapNamePerusahaan {
             BeratPanenTotal = Double(recapPanenTotal[counter].jumlahBerat)+BeratPanenTotal
-            print(BeratPanenTotal)
             totalPanen = Double(recapPanenTotal[counter].panenTotal)+totalPanen
             balance = recapPembayaranTotal[counter].pembayaranTotal - recapPanenTotal[counter].panenTotal + balance
             csvText.append("\(name.name),\(recapPembayaranTotal[counter].pembayaranTotal),\(recapPanenTotal[counter].panenTotal),\(recapPembayaranTotal[counter].pembayaranTotal - recapPanenTotal[counter].panenTotal),\(balance),\(totalPanen),\(recapPanenTotal[counter].jumlahBerat)\n")
@@ -341,15 +340,14 @@ class PerusahaanTableViewController: UITableViewController, UISearchResultsUpdat
     
     func getCompanyList() {
         let db = Firestore.firestore()
-        db.collection("companyList").getDocuments { (querySnapshot, error) in
+        db.collection("dataPerusahaan").getDocuments { (querySnapshot, error) in
             if let error = error {
                 print("Error Getting Documents\(error)")
             } else {
                 guard let snap = querySnapshot else {return}
                 for document in snap.documents {
-                    let name = document.documentID
+                    let name = document.data()["companyName"] as! String
                     let db = Firestore.firestore()
-                    //GET THE NAME FROM TABLE
                     //getPanenData
                     db.collection("\(self.farmName)\(self.cycleNumber)Panen").whereField("namaPerusahaan", isEqualTo: "\(name)").order(by: "namaPerusahaan").addSnapshotListener { (querySnapshot, err) in
                         guard let documents = querySnapshot?.documents else {
@@ -367,6 +365,7 @@ class PerusahaanTableViewController: UITableViewController, UISearchResultsUpdat
                         let newRecapPanen = recapPanen(panenTotal: total, name: name, jumlahBerat : totalBerat)
                         self.recapPanenTotal.append(newRecapPanen)
                     }
+                    //Get Perusahaan Data
                     db.collection("\(self.farmName)\(self.cycleNumber)Pembayaran").whereField("perusahaanName", isEqualTo: "\(name)").order(by: "perusahaanName").addSnapshotListener { (querySnapshot, err) in
                         guard let documents = querySnapshot?.documents else {
                           return
@@ -385,6 +384,9 @@ class PerusahaanTableViewController: UITableViewController, UISearchResultsUpdat
                             self.recapPembayaranTotal.append(newRecapPembayaran)
                             let newRecapName = recapName(name: name)
                             self.recapNamePerusahaan.append(newRecapName)
+                            print(self.recapNamePerusahaan.count)
+                            print(self.recapPembayaranTotal.count)
+                            print(self.recapPanenTotal.count)
                         }
                     }
                 }
