@@ -13,7 +13,8 @@ import FirebaseFirestoreSwift
 struct recapPanen: Codable {
     var panenTotal : Int
     var name : String
-    var jumlahBerat : Int
+    var jumlahBerat : Float
+    var panenNumber : Int
 }
 struct recapName: Codable {
     var name : String

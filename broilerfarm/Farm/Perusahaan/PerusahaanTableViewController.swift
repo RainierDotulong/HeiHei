@@ -301,6 +301,8 @@ class PerusahaanTableViewController: UITableViewController, UISearchResultsUpdat
     }
     @IBAction func recapButtonPressed(_ sender: UIBarButtonItem) {
         print("Create recap")
+        
+        
         let filename = "\(farmName.prefix(1).uppercased())\(cycleNumber)TotalBalance.csv"
         let path = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(filename)
         var csvText = "Perusahaan "
@@ -311,11 +313,17 @@ class PerusahaanTableViewController: UITableViewController, UISearchResultsUpdat
         var BeratPanenTotal = 0.0
         var balance = 0
         for name in recapNamePerusahaan {
-            BeratPanenTotal = Double(recapPanenTotal[counter].jumlahBerat)+BeratPanenTotal
-            totalPanen = Double(recapPanenTotal[counter].panenTotal)+totalPanen
-            balance = recapPembayaranTotal[counter].pembayaranTotal - recapPanenTotal[counter].panenTotal + balance
-            csvText.append("\(name.name),\(recapPembayaranTotal[counter].pembayaranTotal),\(recapPanenTotal[counter].panenTotal),\(recapPembayaranTotal[counter].pembayaranTotal - recapPanenTotal[counter].panenTotal),\(balance),\(totalPanen),\(recapPanenTotal[counter].jumlahBerat)\n")
-            counter += 1
+            if recapPanenTotal[counter].name != recapPembayaranTotal[counter].name {
+                print("name of panen and name of pembayarang is not the same")
+                recapPanenTotal.remove(at: counter)
+            } else {
+                BeratPanenTotal = Double(recapPanenTotal[counter].jumlahBerat)+BeratPanenTotal
+                totalPanen = Double(recapPanenTotal[counter].panenTotal)+totalPanen
+                balance = recapPembayaranTotal[counter].pembayaranTotal - recapPanenTotal[counter].panenTotal + balance
+                csvText.append("\(name.name),\(recapPembayaranTotal[counter].pembayaranTotal),\(recapPanenTotal[counter].panenTotal),\(recapPembayaranTotal[counter].pembayaranTotal - recapPanenTotal[counter].panenTotal),\(balance),\(totalPanen),\(recapPanenTotal[counter].jumlahBerat)\n")
+                counter += 1
+            }
+
         }
         csvText.append (" ")
         csvText.append ("\n")
@@ -353,16 +361,23 @@ class PerusahaanTableViewController: UITableViewController, UISearchResultsUpdat
                         guard let documents = querySnapshot?.documents else {
                             return
                         }
-                        var total = 0
-                        var totalBerat = 0
+                        var total : Float = 0
+                        var netto : Float = 0
+                        var panenCounter = 0
                         for documents in documents {
                             let data = documents.data()
-                            let jumlah = data["jumlahKGDO"] as! Int
-                            let hargaPerKG = data["hargaPerKG"] as! Int
-                            totalBerat = jumlah + totalBerat
-                            total = total + jumlah * hargaPerKG
+                            
+                            let berat = data["berat"] as! [Float]
+                            let tara = data["tara"] as! [Float]
+                            let harga = data["hargaPerKG"] as! Float
+                            netto = berat.reduce(0, +) - tara.reduce(0, +)
+                            total = netto * harga + total
                         }
-                        let newRecapPanen = recapPanen(panenTotal: total, name: name, jumlahBerat : totalBerat)
+                        let newRecapPanen = recapPanen(panenTotal: Int(total), name: name, jumlahBerat : Float(netto), panenNumber: panenCounter)
+                        print(name)
+                        print(total)
+                        print(netto)
+                        panenCounter += 1
                         self.recapPanenTotal.append(newRecapPanen)
                     }
                     //Get Perusahaan Data
@@ -375,12 +390,14 @@ class PerusahaanTableViewController: UITableViewController, UISearchResultsUpdat
                         } else{
                             print("Pembayaran: \(name)")
                             var total = 0
+                            var pembayaranCounter = 0
                             for documents in documents {
                                 let data = documents.data()
                                 let nominal = data["nominal"] as! Int
                                 total = total + nominal
                             }
-                            let newRecapPembayaran = recapPembayaran(pembayaranTotal: total, name: name)
+                            let newRecapPembayaran = recapPembayaran(pembayaranTotal: total, name: name, pembayaranNumber: pembayaranCounter)
+                            pembayaranCounter += 1
                             self.recapPembayaranTotal.append(newRecapPembayaran)
                             let newRecapName = recapName(name: name)
                             self.recapNamePerusahaan.append(newRecapName)

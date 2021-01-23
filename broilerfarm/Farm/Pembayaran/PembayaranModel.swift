@@ -13,6 +13,7 @@ import FirebaseFirestoreSwift
 struct recapPembayaran: Codable {
     var pembayaranTotal : Int
     var name : String
+    var pembayaranNumber : Int
 }
 
 struct Pembayaran: Codable {
