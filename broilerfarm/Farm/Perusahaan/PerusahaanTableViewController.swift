@@ -357,26 +357,41 @@ class PerusahaanTableViewController: UITableViewController, UISearchResultsUpdat
                     let name = document.data()["companyName"] as! String
                     let db = Firestore.firestore()
                     //getPanenData
-                    db.collection("\(self.farmName)\(self.cycleNumber)Panen").whereField("namaPerusahaan", isEqualTo: "\(name)").order(by: "namaPerusahaan").addSnapshotListener { (querySnapshot, err) in
+                    db.collection("\(self.farmName)\(self.cycleNumber)Panen").whereField("namaPerusahaan", isEqualTo: "\(name)").order(by: "creationTimestamp").addSnapshotListener { (querySnapshot, err) in
                         guard let documents = querySnapshot?.documents else {
                             return
                         }
+                        var subtotals : [Float] = [Float]()
                         var total : Float = 0
                         var netto : Float = 0
                         var panenCounter = 0
+                        var actualBerat : [Float] = [Float]()
+                        var actualTara : [Float] = [Float]()
+                        print(name)
                         for documents in documents {
                             let data = documents.data()
                             
                             let berat = data["berat"] as! [Float]
                             let tara = data["tara"] as! [Float]
                             let harga = data["hargaPerKG"] as! Float
-                            netto = berat.reduce(0, +) - tara.reduce(0, +)
-                            total = netto * harga + total
+                            let isVoided = data["isVoided"] as! [Bool]
+                            let isSubtract = data["isSubtract"] as! [Bool]
+                            
+                            for i in 0..<isVoided.count {
+                                if isVoided[i] == false && isSubtract[i] == false {
+                                    actualBerat.append(berat[i])
+                                    actualTara.append(tara[i])
+                                }
+                            }
+                            netto = actualBerat.reduce(0, +) - actualTara.reduce(0, +)
+                            let subtotal = String(format:"%.0f", Float(harga) * netto)
+                            print(subtotal)
+                            subtotals.append(Float(harga) * netto)
+                            total = subtotals.reduce(0, +)
+                            actualBerat = []
+                            actualTara = []
                         }
                         let newRecapPanen = recapPanen(panenTotal: Int(total), name: name, jumlahBerat : Float(netto), panenNumber: panenCounter)
-                        print(name)
-                        print(total)
-                        print(netto)
                         panenCounter += 1
                         self.recapPanenTotal.append(newRecapPanen)
                     }
@@ -388,7 +403,6 @@ class PerusahaanTableViewController: UITableViewController, UISearchResultsUpdat
                         if name == "Cindie" {
                             return
                         } else{
-                            print("Pembayaran: \(name)")
                             var total = 0
                             var pembayaranCounter = 0
                             for documents in documents {
@@ -401,9 +415,6 @@ class PerusahaanTableViewController: UITableViewController, UISearchResultsUpdat
                             self.recapPembayaranTotal.append(newRecapPembayaran)
                             let newRecapName = recapName(name: name)
                             self.recapNamePerusahaan.append(newRecapName)
-                            print(self.recapNamePerusahaan.count)
-                            print(self.recapPembayaranTotal.count)
-                            print(self.recapPanenTotal.count)
                         }
                     }
                 }

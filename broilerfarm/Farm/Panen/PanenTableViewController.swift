@@ -435,7 +435,6 @@ class PanenTableViewController: UITableViewController, EmptyStateDelegate, UISea
             var validTara : [Float] = [Float]()
             for i in 0..<data.isVoided.count {
                 if data.isVoided[i] == false && data.isSubtract[i] == false {
-                    validJumlah.append(data.jumlah[i])
                     validBerat.append(data.berat[i])
                     validTara.append(data.tara[i])
                 }
@@ -443,7 +442,6 @@ class PanenTableViewController: UITableViewController, EmptyStateDelegate, UISea
             cell.namaPerusahaanLabel.text = data.namaPerusahaan
             cell.jumlahKGLabel.text = "Jumlah KG DO: \(String(format: "%.2f", data.jumlahKGDO)) KG"
             cell.rangeBBLabel.text = "Range BB: \(data.rangeBB)"
-            let totalEkor = validJumlah.reduce(0,+)
             let netto = validBerat.reduce(0,+) - validTara.reduce(0,+)
             let total = (netto * Float(data.hargaPerKG))
             print("Name: \(data.namaPerusahaan) kgdo: \(data.berat)")
