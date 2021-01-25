@@ -306,12 +306,13 @@ class PerusahaanTableViewController: UITableViewController, UISearchResultsUpdat
         let filename = "\(farmName.prefix(1).uppercased())\(cycleNumber)TotalBalance.csv"
         let path = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(filename)
         var csvText = "Perusahaan "
-        csvText.append ("Name,Pembayaran,Panen,subtotal,Balance,TotalPanen,BeratPanen")
+        csvText.append ("Name,Pembayaran,Panen,subtotal,Balance,TotalPanen,BeratPanen,EkorPanen")
         csvText.append ("\n")
         var counter = 0
         var totalPanen = 0.0
         var BeratPanenTotal = 0.0
         var balance = 0
+        var totalEkor : [Int] = [Int]()
         for name in recapNamePerusahaan {
             if recapPanenTotal[counter].name != recapPembayaranTotal[counter].name {
                 print("name of panen and name of pembayarang is not the same")
@@ -320,8 +321,10 @@ class PerusahaanTableViewController: UITableViewController, UISearchResultsUpdat
                 BeratPanenTotal = Double(recapPanenTotal[counter].jumlahBerat)+BeratPanenTotal
                 totalPanen = Double(recapPanenTotal[counter].panenTotal)+totalPanen
                 balance = recapPembayaranTotal[counter].pembayaranTotal - recapPanenTotal[counter].panenTotal + balance
-                csvText.append("\(name.name),\(recapPembayaranTotal[counter].pembayaranTotal),\(recapPanenTotal[counter].panenTotal),\(recapPembayaranTotal[counter].pembayaranTotal - recapPanenTotal[counter].panenTotal),\(balance),\(totalPanen),\(recapPanenTotal[counter].jumlahBerat)\n")
+                csvText.append("\(name.name),\(recapPembayaranTotal[counter].pembayaranTotal),\(recapPanenTotal[counter].panenTotal),\(recapPembayaranTotal[counter].pembayaranTotal - recapPanenTotal[counter].panenTotal),\(balance),\(totalPanen),\(recapPanenTotal[counter].jumlahBerat),\(recapPanenTotal[counter].jumlahEkor)\n")
+                totalEkor.append(recapPanenTotal[counter].jumlahEkor)
                 counter += 1
+  
             }
 
         }
@@ -329,6 +332,9 @@ class PerusahaanTableViewController: UITableViewController, UISearchResultsUpdat
         csvText.append ("\n")
         let everage = Double(round(1000*totalPanen/BeratPanenTotal)/1000)
         csvText.append("EVERAGE,\(everage)")
+        csvText.append("\n")
+        let totalEkors = totalEkor.reduce(0, +)
+        csvText.append("TOTAL EKOR,\(totalEkors)")
         do {
             try csvText.write(to: path!, atomically: true, encoding: String.Encoding.utf8)
             csvPath = path!
@@ -367,18 +373,22 @@ class PerusahaanTableViewController: UITableViewController, UISearchResultsUpdat
                         var panenCounter = 0
                         var actualBerat : [Float] = [Float]()
                         var actualTara : [Float] = [Float]()
+                        var actualJumlahEkor : [Int] = [Int]()
+                        var totalJumlahEkor : Int = 0
                         print(name)
                         for documents in documents {
                             let data = documents.data()
                             
                             let berat = data["berat"] as! [Float]
                             let tara = data["tara"] as! [Float]
+                            let jumlahEkor = data["jumlah"] as! [Int]
                             let harga = data["hargaPerKG"] as! Float
                             let isVoided = data["isVoided"] as! [Bool]
                             let isSubtract = data["isSubtract"] as! [Bool]
                             
                             for i in 0..<isVoided.count {
                                 if isVoided[i] == false && isSubtract[i] == false {
+                                    actualJumlahEkor.append(jumlahEkor[i])
                                     actualBerat.append(berat[i])
                                     actualTara.append(tara[i])
                                 }
@@ -388,10 +398,12 @@ class PerusahaanTableViewController: UITableViewController, UISearchResultsUpdat
                             print(subtotal)
                             subtotals.append(Float(harga) * netto)
                             total = subtotals.reduce(0, +)
+                            totalJumlahEkor = actualJumlahEkor.reduce(0, +)
                             actualBerat = []
+                            actualJumlahEkor = []
                             actualTara = []
                         }
-                        let newRecapPanen = recapPanen(panenTotal: Int(total), name: name, jumlahBerat : Float(netto), panenNumber: panenCounter)
+                        let newRecapPanen = recapPanen(panenTotal: Int(total), name: name, jumlahBerat : Float(netto), panenNumber: panenCounter, jumlahEkor: totalJumlahEkor)
                         panenCounter += 1
                         self.recapPanenTotal.append(newRecapPanen)
                     }

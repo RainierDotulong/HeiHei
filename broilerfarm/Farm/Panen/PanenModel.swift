@@ -15,6 +15,7 @@ struct recapPanen: Codable {
     var name : String
     var jumlahBerat : Float
     var panenNumber : Int
+    var jumlahEkor : Int
 }
 struct recapName: Codable {
     var name : String
